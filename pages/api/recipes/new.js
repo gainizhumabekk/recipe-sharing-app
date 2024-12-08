@@ -64,3 +64,22 @@ export default function NewRecipe() {
     </form>
   );
 }
+import Layout from "../components/Layout";
+
+export default function RecipeList({ recipes }) {
+  return (
+    <Layout>
+      <h1 className="text-2xl font-bold mb-4">All Recipes</h1>
+      <div className="grid grid-cols-3 gap-4">
+        {recipes.map((recipe) => (
+          <div key={recipe.id} className="p-4 border rounded shadow-md">
+            <h2 className="text-xl font-bold">{recipe.title}</h2>
+            <p>{recipe.description}</p>
+            <a href={`/recipes/${recipe.id}`} className="text-blue-500">View Details</a>
+          </div>
+        ))}
+      </div>
+    </Layout>
+  );
+}
+
