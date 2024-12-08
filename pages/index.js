@@ -1,3 +1,5 @@
+import Layout from "../components/Layout";
+
 export default function Home() {
   return (
     <div>
@@ -7,14 +9,4 @@ export default function Home() {
   );
 }
 
-import Layout from "../components/Layout";
-
-export default function Home() {
-  return (
-    <Layout>
-      <h1>Welcome to Recipe Sharing App!</h1>
-      <p>Use the navigation menu to log in, register, and explore recipes.</p>
-    </Layout>
-  );
-}
 
