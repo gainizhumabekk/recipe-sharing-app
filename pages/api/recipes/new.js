@@ -7,26 +7,6 @@ export default function NewRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
   const [isPublic, setIsPublic] = useState(false);
-const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
-
-async function handleImageUpload() {
-    const formData = new FormData();
-    formData.append("file", image);
-
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      setImageUrl(data.url);
-      alert("Image uploaded successfully!");
-    } else {
-      alert("Failed to upload image.");
-    }
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
