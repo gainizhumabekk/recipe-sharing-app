@@ -7,11 +7,4 @@ export default function Home() {
       <p>Use the navigation menu to log in or register and explore recipes.</p>
     </div>
   );
-};
-
-Home.getInitialProps = async () => {
-  const data = await fetchSomeData();
-  return { data };
-};
-
-
+}
