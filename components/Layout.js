@@ -1,16 +1,34 @@
+import Link from "next/link";
+
 export default function Layout({ children }) {
   return (
     <div>
-      <header className="bg-blue-600 text-white p-4">
-        <h1 className="text-center">Recipe Sharing App</h1>
-        <nav className="flex justify-center space-x-4">
-          <a href="/" className="text-white">Home</a>
-          <a href="/register" className="text-white">Register</a>
-          <a href="/login" className="text-white">Login</a>
-          <a href="/recipes" className="text-white">Recipes</a>
-        </nav>
+      <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
+        <div className="flex items-center space-x-4">
+          <img src="/logo.png" alt="Logo" className="h-10" />
+          <h1 className="text-2xl font-bold">Recipe Sharing App</h1>
+        </div>
+        <div className="space-x-4">
+          <Link href="/register">
+            <a className="hover:underline">Register</a>
+          </Link>
+          <Link href="/login">
+            <a className="hover:underline">Login</a>
+          </Link>
+        </div>
       </header>
+
+      <nav className="bg-gray-800 text-white p-2 flex space-x-4">
+        <Link href="/recipes">
+          <a className="hover:underline">View Recipes</a>
+        </Link>
+        <Link href="/recipes/new">
+          <a className="hover:underline">Add Recipe</a>
+        </Link>
+      </nav>
+
       <main className="p-4">{children}</main>
+
       <footer className="bg-gray-800 text-white text-center p-4">
         &copy; {new Date().getFullYear()} Recipe Sharing App
       </footer>

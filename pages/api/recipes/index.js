@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getSession } from "next-auth/react";
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
         steps,
         isPublic,
         imageUrl,
-        userId: 1, // Replace with the logged-in user's ID
+        userId: session.user.id, // Replace with the logged-in user's ID
       },
     });
     return res.status(201).json(recipe);
