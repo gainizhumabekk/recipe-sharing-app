@@ -1,51 +1,50 @@
-import { getSession } from "next-auth/react";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 
 export default function NewRecipe() {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [steps, setSteps] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
+  const [formula, setFormula] = useState("");
+  const [image, setImage] = useState(null);
   const router = useRouter();
- useEffect(() => {
-    async function checkSession() {
-      const session = await getSession();
-      if (!session) {
-        router.push("/login"); // Redirect to login if not logged in
-      }
-    }
-    checkSession();
-  }, []);
-
-  return (
-    <div>
-      <h1>Add a New Recipe</h1>
-      {/* Add Recipe form here */}
-    </div>
-  );
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const response = await fetch("/api/recipes", {
+    // Upload image to a cloud service (e.g., Cloudinary) if required
+    let imageUrl = "";
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary preset
+
+      const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      imageUrl = data.secure_url;
+    }
+
+    // Send recipe data to API
+    const res = await fetch("/api/recipes", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        title,
+        name,
         description,
-        ingredients: ingredients.split(","),
-        steps: steps.split("."),
-        isPublic,
+        formula,
+        imageUrl, // Pass the uploaded image URL
       }),
     });
 
-    if (response.ok) {
+    if (res.ok) {
       alert("Recipe added successfully!");
-      router.push("/recipes");
+      router.push("/recipes"); // Redirect to recipes page
     } else {
       alert("Failed to add recipe.");
     }
@@ -56,11 +55,11 @@ export default function NewRecipe() {
       <h1 className="text-2xl font-bold mb-4">Add a New Recipe</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block font-bold">Title</label>
+          <label className="block font-bold">Recipe Name</label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="border rounded w-full p-2"
             required
           />
@@ -75,30 +74,21 @@ export default function NewRecipe() {
           ></textarea>
         </div>
         <div>
-          <label className="block font-bold">Ingredients (comma-separated)</label>
-          <input
-            type="text"
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
-            className="border rounded w-full p-2"
-            required
-          />
-        </div>
-        <div>
-          <label className="block font-bold">Steps (period-separated)</label>
+          <label className="block font-bold">Formula (Instructions)</label>
           <textarea
-            value={steps}
-            onChange={(e) => setSteps(e.target.value)}
+            value={formula}
+            onChange={(e) => setFormula(e.target.value)}
             className="border rounded w-full p-2"
             required
           ></textarea>
         </div>
         <div>
-          <label className="block font-bold">Make Public</label>
+          <label className="block font-bold">Upload Image</label>
           <input
-            type="checkbox"
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="border rounded w-full p-2"
           />
         </div>
         <button

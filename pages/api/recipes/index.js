@@ -4,38 +4,46 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { title, description, ingredients, steps, isPublic } = req.body;
+    const { name, description, formula, imageUrl } = req.body;
 
     try {
       const recipe = await prisma.recipe.create({
         data: {
-          title,
+          name,
           description,
-          ingredients: ingredients,
-          steps: steps,
-          isPublic,
+          formula,
+          imageUrl,
         },
       });
-      return res.status(201).json(recipe);
+      res.status(201).json(recipe);
     } catch (error) {
       console.error("Error creating recipe:", error);
-      return res.status(500).json({ error: "Failed to create recipe." });
+      res.status(500).json({ error: "Failed to create recipe." });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });
   }
-}import Layout from "../components/Layout";
+}
+
+export async function getServerSideProps() {
+  const recipes = await prisma.recipe.findMany();
+  return {
+    props: { recipes },
+  };
+}
+import Layout from "../components/Layout";
 
 export default function RecipeList({ recipes }) {
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">All Recipes</h1>
-      <div className="grid grid-cols-3 gap-4">
+      <h1 className="text-2xl font-bold mb-4">Recipes</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe) => (
-          <div key={recipe.id} className="p-4 border rounded shadow-md">
-            <h2 className="text-xl font-bold">{recipe.title}</h2>
+          <div key={recipe.id} className="p-4 border rounded shadow">
+            <h2 className="text-xl font-bold">{recipe.name}</h2>
             <p>{recipe.description}</p>
-            <a href={`/recipes/${recipe.id}`} className="text-blue-500">View Details</a>
+            {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.name} className="w-full h-auto" />}
+            <p className="mt-2">{recipe.formula}</p>
           </div>
         ))}
       </div>
