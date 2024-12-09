@@ -1,38 +1,39 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Layout from "../../components/Layout";
 
 export default function NewRecipe() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Breakfast");
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
   const [isPublic, setIsPublic] = useState(false);
-const router = useRouter();
+  const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const res = await fetch("/api/recipes", {
+
+    const response = await fetch("/api/recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title,
         description,
-        category,
         ingredients: ingredients.split(","),
         steps: steps.split("."),
         isPublic,
       }),
     });
-    if (res.ok) {
-      alert("Recipe created!");
-router.push("/recipes");
+
+    if (response.ok) {
+      alert("Recipe added successfully!");
+      router.push("/recipes");
     } else {
       alert("Failed to add recipe.");
     }
   }
 
- return (
+  return (
     <Layout>
       <h1 className="text-2xl font-bold mb-4">Add a New Recipe</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,22 +93,3 @@ router.push("/recipes");
     </Layout>
   );
 }
-import Layout from "../components/Layout";
-
-export default function RecipeList({ recipes }) {
-  return (
-    <Layout>
-      <h1 className="text-2xl font-bold mb-4">All Recipes</h1>
-      <div className="grid grid-cols-3 gap-4">
-        {recipes.map((recipe) => (
-          <div key={recipe.id} className="p-4 border rounded shadow-md">
-            <h2 className="text-xl font-bold">{recipe.title}</h2>
-            <p>{recipe.description}</p>
-            <a href={`/recipes/${recipe.id}`} className="text-blue-500">View Details</a>
-          </div>
-        ))}
-      </div>
-    </Layout>
-  );
-}
-
