@@ -1,33 +1,32 @@
 import { PrismaClient } from "@prisma/client";
-import Layout from "../../components/Layout";
 
 const prisma = new PrismaClient();
 
-export async function getServerSideProps() {
-  const recipes = await prisma.recipe.findMany();
-  return {
-    props: { recipes }, // Pass recipes as props to the component
-  };
-}
+export default async function handler(req, res) {
+  if (req.method === "GET") {
+    try {
+      const recipes = await prisma.recipe.findMany();
+      res.status(200).json(recipes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch recipes." });
+    }
+  } else if (req.method === "POST") {
+    const { name, description, formula, image } = req.body;
 
-export default function Recipes({ recipes }) {
-  return (
-    <Layout>
-      <h1>Recipes</h1>
-      {recipes.length === 0 ? (
-        <p>No recipes found. Add a new recipe!</p>
-      ) : (
-        <div>
-          {recipes.map((recipe) => (
-            <div key={recipe.id}>
-              <h2>{recipe.name}</h2>
-              <p>{recipe.description}</p>
-              <p>{recipe.formula}</p>
-              {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.name} />}
-            </div>
-          ))}
-        </div>
-      )}
-    </Layout>
-  );
+    try {
+      const newRecipe = await prisma.recipe.create({
+        data: {
+          name,
+          description,
+          formula,
+          image,
+        },
+      });
+      res.status(201).json(newRecipe);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create a new recipe." });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed." });
+  }
 }
