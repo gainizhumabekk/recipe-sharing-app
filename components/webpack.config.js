@@ -1,4 +1,4 @@
-const path = require('path');
+const path = await import('path');
 
 module.exports = {
     entry: './src/index.js',
