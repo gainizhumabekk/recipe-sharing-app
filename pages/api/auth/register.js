@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"; 
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -15,6 +15,7 @@ export default async function handler(req, res) {
       });
       res.status(201).json(user);
     } catch (error) {
+      console.error(error); // Log the error for debugging
       res.status(500).json({ error: "User already exists." });
     }
   } else {
