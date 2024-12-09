@@ -10,20 +10,24 @@ export async function getServerSideProps() {
   };
 }
 
-export default function RecipeList({ recipes }) {
+export default function Recipes({ recipes }) {
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">Recipes</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {recipes.map((recipe) => (
-          <div key={recipe.id} className="p-4 border rounded shadow">
-            <h2 className="text-xl font-bold">{recipe.name}</h2>
-            <p>{recipe.description}</p>
-            {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.name} className="w-full h-auto" />}
-            <p className="mt-2">{recipe.formula}</p>
-          </div>
-        ))}
-      </div>
+      <h1>Recipes</h1>
+      {recipes.length === 0 ? (
+        <p>No recipes found. Add a new recipe!</p>
+      ) : (
+        <div>
+          {recipes.map((recipe) => (
+            <div key={recipe.id}>
+              <h2>{recipe.name}</h2>
+              <p>{recipe.description}</p>
+              <p>{recipe.formula}</p>
+              {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.name} />}
+            </div>
+          ))}
+        </div>
+      )}
     </Layout>
   );
 }
