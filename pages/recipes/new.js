@@ -11,6 +11,7 @@ export default function NewRecipe() {
 
 async function handleSubmit(e) {
   e.preventDefault();
+  console.log("Submitting the recipe form");
 
   let imageUrl = "";
   if (image) {
@@ -18,11 +19,13 @@ async function handleSubmit(e) {
     formData.append("file", image);
     formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary preset
     try {
+      console.log("Uploading image to Cloudinary...");
       const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
         method: "POST",
         body: formData,
       });
       const data = await response.json();
+      console.log("Image uploaded:", data.secure_url);
       imageUrl = data.secure_url;
     } catch (error) {
       alert("Image upload failed.");
@@ -32,6 +35,13 @@ async function handleSubmit(e) {
   }
 
   try {
+    console.log("Sending data to the API:", {
+      name,
+      description,
+      formula,
+      imageUrl,
+    });
+
     const res = await fetch("/api/recipes", {
       method: "POST",
       headers: {
@@ -46,6 +56,8 @@ async function handleSubmit(e) {
     });
 
     if (res.ok) {
+      const recipe = await res.json();
+      console.log("Recipe added successfully:", recipe);
       alert("Recipe added successfully!");
       router.push("/recipes");
     } else {
@@ -56,10 +68,9 @@ async function handleSubmit(e) {
   } catch (error) {
     alert("Failed to add recipe. Please try again.");
     console.error("Error submitting recipe:", error);
-console.log("Submitting data:", { name, description, formula, imageUrl });
-
   }
 }
+
 
 
   return (
