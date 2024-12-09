@@ -1,6 +1,9 @@
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export default function Login() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   async function handleLogin(e) {
     e.preventDefault();
 
@@ -8,16 +11,18 @@ export default function Login() {
     const password = e.target.password.value;
 
     const result = await signIn("credentials", {
-      redirect: false, // Prevent auto-redirect
+      redirect: false, // Prevent auto-redirection
       email,
       password,
+      callbackUrl: "/recipes/new", // Redirect to the "Add Recipe" page
     });
 
-    if (result?.ok) {
-      // Redirect to the Add Recipe page
-      window.location.href = "/recipes/new";
+    if (result?.error) {
+      setErrorMessage("Invalid email or password.");
+    } else if (result?.url) {
+      window.location.href = result.url; // Redirect to the provided URL
     } else {
-      alert("Invalid email or password.");
+      setErrorMessage("Something went wrong. Please try again.");
     }
   }
 
@@ -29,6 +34,7 @@ export default function Login() {
         <input type="password" name="password" placeholder="Password" required />
         <button type="submit">Login</button>
       </form>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 }

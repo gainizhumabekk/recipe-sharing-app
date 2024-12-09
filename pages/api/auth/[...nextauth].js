@@ -1,13 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
 export default NextAuth({
-adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -19,10 +17,12 @@ adapter: PrismaAdapter(prisma),
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
+
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
-          return user;
+          return user; // Return user if valid
         }
-        return null;
+
+        return null; // Return null if invalid
       },
     }),
   ],
@@ -30,9 +30,21 @@ adapter: PrismaAdapter(prisma),
     strategy: "jwt",
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Redirect to Add Recipe page after login
-      return "/recipes/new";
+    async session({ session, token }) {
+      session.user = token.user;
+      return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+  },
+  pages: {
+    signIn: "/login",
   },
 });
