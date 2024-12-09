@@ -10,7 +10,7 @@ export default function NewRecipe() {
   const router = useRouter();
 
 async function handleSubmit(e) {
-  e.preventDefault(); // Prevent the form from reloading the page
+  e.preventDefault();
 
   let imageUrl = "";
   if (image) {
@@ -56,6 +56,8 @@ async function handleSubmit(e) {
   } catch (error) {
     alert("Failed to add recipe. Please try again.");
     console.error("Error submitting recipe:", error);
+console.log("Submitting data:", { name, description, formula, imageUrl });
+
   }
 }
 
