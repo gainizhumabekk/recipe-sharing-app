@@ -10,45 +10,46 @@ export default function NewRecipe() {
   const router = useRouter();
 
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Upload image to a cloud service (e.g., Cloudinary) if required
-    let imageUrl = "";
-    if (image) {
-      const formData = new FormData();
-      formData.append("file", image);
-      formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary preset
-
-      const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      imageUrl = data.secure_url;
-    }
-
-    // Send recipe data to API
-    const res = await fetch("/api/recipes", {
+  let imageUrl = "";
+  if (image) {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "your_upload_preset");
+    const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        description,
-        formula,
-        imageUrl, // Pass the uploaded image URL
-      }),
+      body: formData,
     });
-
-    if (res.ok) {
-      alert("Recipe added successfully!");
-      router.push("/recipes"); // Redirect to recipes page
-    } else {
-      alert("Failed to add recipe.");
-    }
+    const data = await response.json();
+    imageUrl = data.secure_url;
   }
+
+  console.log("Submitting data:", { name, description, formula, imageUrl }); // Log the submitted data
+
+  const res = await fetch("/api/recipes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      description,
+      formula,
+      imageUrl,
+    }),
+  });
+
+  if (res.ok) {
+    alert("Recipe added successfully!");
+    router.push("/recipes");
+  } else {
+    const error = await res.json();
+    console.error("Failed to add recipe:", error);
+    alert("Failed to add recipe.");
+  }
+}
+
 
   return (
     <Layout>
