@@ -1,37 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { getSession } from "next-auth/react";
+import Layout from "../../components/Layout";
+
 const prisma = new PrismaClient();
-
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { name, description, formula, imageUrl } = req.body;
-
-    try {
-      const recipe = await prisma.recipe.create({
-        data: {
-          name,
-          description,
-          formula,
-          imageUrl,
-        },
-      });
-      res.status(201).json(recipe);
-    } catch (error) {
-      console.error("Error creating recipe:", error);
-      res.status(500).json({ error: "Failed to create recipe." });
-    }
-  } else {
-    res.status(405).json({ error: "Method not allowed" });
-  }
-}
 
 export async function getServerSideProps() {
   const recipes = await prisma.recipe.findMany();
   return {
-    props: { recipes },
+    props: { recipes }, // Pass recipes as props to the component
   };
 }
-import Layout from "../components/Layout";
 
 export default function RecipeList({ recipes }) {
   return (
