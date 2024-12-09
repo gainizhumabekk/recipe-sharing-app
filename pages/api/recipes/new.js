@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function NewRecipe() {
   const [title, setTitle] = useState("");
@@ -7,6 +8,7 @@ export default function NewRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
   const [isPublic, setIsPublic] = useState(false);
+const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,44 +26,70 @@ export default function NewRecipe() {
     });
     if (res.ok) {
       alert("Recipe created!");
+router.push("/recipes");
+    } else {
+      alert("Failed to add recipe.");
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h1>Create a New Recipe</h1>
-      <label>
-        Title:
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-      </label>
-      <label>
-        Description:
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-      </label>
-      <label>
-        Category:
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="Breakfast">Breakfast</option>
-          <option value="Lunch">Lunch</option>
-          <option value="Dinner">Dinner</option>
-          <option value="Snacks">Snacks</option>
-          <option value="Desserts">Desserts</option>
-        </select>
-      </label>
-      <label>
-        Ingredients (comma-separated):
-        <input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
-      </label>
-      <label>
-        Steps (period-separated):
-        <textarea value={steps} onChange={(e) => setSteps(e.target.value)} />
-      </label>
-      <label>
-        Public:
-        <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
+ return (
+    <Layout>
+      <h1 className="text-2xl font-bold mb-4">Add a New Recipe</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block font-bold">Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border rounded w-full p-2"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-bold">Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border rounded w-full p-2"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label className="block font-bold">Ingredients (comma-separated)</label>
+          <input
+            type="text"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            className="border rounded w-full p-2"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-bold">Steps (period-separated)</label>
+          <textarea
+            value={steps}
+            onChange={(e) => setSteps(e.target.value)}
+            className="border rounded w-full p-2"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label className="block font-bold">Make Public</label>
+          <input
+            type="checkbox"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Submit Recipe
+        </button>
+      </form>
+    </Layout>
   );
 }
 import Layout from "../components/Layout";

@@ -9,21 +9,21 @@ export default function Layout({ children }) {
           <h1 className="text-2xl font-bold">Recipe Sharing App</h1>
         </div>
         <div className="space-x-4">
-          <Link href="/register">
-            <a className="hover:underline">Register</a>
+          <Link href="/register" className="hover:underline">
+            Register
           </Link>
-          <Link href="/login">
-            <a className="hover:underline">Login</a>
+          <Link href="/login" className="hover:underline">
+            Login
           </Link>
         </div>
       </header>
 
       <nav className="bg-gray-800 text-white p-2 flex space-x-4">
-        <Link href="/recipes">
-          <a className="hover:underline">View Recipes</a>
+        <Link href="/recipes" className="hover:underline">
+          View Recipes
         </Link>
-        <Link href="/recipes/new">
-          <a className="hover:underline">Add Recipe</a>
+        <Link href="/recipes/new" className="hover:underline">
+          Add Recipe
         </Link>
       </nav>
 
