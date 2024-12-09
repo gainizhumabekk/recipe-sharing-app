@@ -3,31 +3,28 @@ import { getSession } from "next-auth/react";
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  if (req.method === "GET") {
-    const recipes = await prisma.recipe.findMany();
-    return res.status(200).json(recipes);
-  }
-
   if (req.method === "POST") {
-    const { title, description, category, ingredients, steps, isPublic, imageUrl } = req.body;
-    const recipe = await prisma.recipe.create({
-      data: {
-        title,
-        description,
-        category,
-        ingredients,
-        steps,
-        isPublic,
-        imageUrl,
-        userId: session.user.id, // Replace with the logged-in user's ID
-      },
-    });
-    return res.status(201).json(recipe);
-  }
+    const { title, description, ingredients, steps, isPublic } = req.body;
 
-  res.status(405).json({ error: "Method not allowed" });
-}
-import Layout from "../components/Layout";
+    try {
+      const recipe = await prisma.recipe.create({
+        data: {
+          title,
+          description,
+          ingredients: ingredients,
+          steps: steps,
+          isPublic,
+        },
+      });
+      return res.status(201).json(recipe);
+    } catch (error) {
+      console.error("Error creating recipe:", error);
+      return res.status(500).json({ error: "Failed to create recipe." });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
+  }
+}import Layout from "../components/Layout";
 
 export default function RecipeList({ recipes }) {
   return (
