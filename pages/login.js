@@ -8,13 +8,14 @@ export default function Login() {
     const password = e.target.password.value;
 
     const result = await signIn("credentials", {
-      redirect: true,
+      redirect: false, // Prevent auto-redirect
       email,
       password,
     });
 
-    if (!result.error) {
-      alert("Login successful!");
+    if (result?.ok) {
+      // Redirect to the Add Recipe page
+      window.location.href = "/recipes/new";
     } else {
       alert("Invalid email or password.");
     }

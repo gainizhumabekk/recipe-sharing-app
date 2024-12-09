@@ -1,3 +1,5 @@
+import { getSession } from "next-auth/react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
@@ -9,6 +11,22 @@ export default function NewRecipe() {
   const [steps, setSteps] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const router = useRouter();
+ useEffect(() => {
+    async function checkSession() {
+      const session = await getSession();
+      if (!session) {
+        router.push("/login"); // Redirect to login if not logged in
+      }
+    }
+    checkSession();
+  }, []);
+
+  return (
+    <div>
+      <h1>Add a New Recipe</h1>
+      {/* Add Recipe form here */}
+    </div>
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();

@@ -29,10 +29,10 @@ adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
-callbacks: {
-    async session({ session, token }) {
-      session.user.id = token.sub;
-      return session;
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Redirect to Add Recipe page after login
+      return "/recipes/new";
     },
   },
 });
