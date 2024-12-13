@@ -1,40 +1,44 @@
-import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  async function handleLogin(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
     const result = await signIn("credentials", {
-      redirect: false, // Prevent auto-redirection
       email,
       password,
-      callbackUrl: "/recipes/new", // Redirect to the "Add Recipe" page
+      redirect: true,
+      callbackUrl: "/recipes",
     });
 
-    if (result?.error) {
-      setErrorMessage("Invalid email or password.");
-    } else if (result?.url) {
-      window.location.href = result.url; // Redirect to the provided URL
-    } else {
-      setErrorMessage("Something went wrong. Please try again.");
+    if (!result) {
+      alert("Login failed! Check your credentials.");
     }
-  }
+  };
 
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
+      <form onSubmit={handleSubmit}>
+        <label>Email:</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label>Password:</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Login</button>
       </form>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 }

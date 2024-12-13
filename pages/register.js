@@ -6,7 +6,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const response = await fetch("/api/auth/register", {
@@ -19,26 +19,26 @@ export default function Register() {
       alert("Registration successful!");
       router.push("/login");
     } else {
-      alert("Registration failed.");
+      alert("Registration failed. User may already exist.");
     }
-  }
+  };
 
   return (
     <div>
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
+        <label>Email:</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
           required
         />
+        <label>Password:</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
           required
         />
         <button type="submit">Register</button>

@@ -19,10 +19,10 @@ export default NextAuth({
         });
 
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
-          return user; // Return user if valid
+          return user;
         }
 
-        return null; // Return null if invalid
+        return null;
       },
     }),
   ],
@@ -39,9 +39,6 @@ export default NextAuth({
         token.user = user;
       }
       return token;
-    },
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   pages: {

@@ -3,28 +3,33 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
+  const { id } = req.query;
+
   if (req.method === "GET") {
     try {
-      const recipes = await prisma.recipe.findMany();
-      res.status(200).json(recipes);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch recipes." });
+      const recipe = await prisma.recipe.findUnique({ where: { id: Number(id) } });
+      if (recipe) res.status(200).json(recipe);
+      else res.status(404).json({ error: "Recipe not found." });
+    } catch {
+      res.status(500).json({ error: "Failed to fetch recipe." });
     }
-  } else if (req.method === "POST") {
+  } else if (req.method === "PUT") {
     const { name, description, formula, image } = req.body;
-
     try {
-      const newRecipe = await prisma.recipe.create({
-        data: {
-          name,
-          description,
-          formula,
-          image,
-        },
+      const updatedRecipe = await prisma.recipe.update({
+        where: { id: Number(id) },
+        data: { name, description, formula, image },
       });
-      res.status(201).json(newRecipe);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create a new recipe." });
+      res.status(200).json(updatedRecipe);
+    } catch {
+      res.status(500).json({ error: "Failed to update recipe." });
+    }
+  } else if (req.method === "DELETE") {
+    try {
+      await prisma.recipe.delete({ where: { id: Number(id) } });
+      res.status(204).end();
+    } catch {
+      res.status(500).json({ error: "Failed to delete recipe." });
     }
   } else {
     res.status(405).json({ error: "Method not allowed." });

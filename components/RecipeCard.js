@@ -3,7 +3,8 @@ export default function RecipeCard({ recipe }) {
     <div>
       <h2>{recipe.name}</h2>
       <p>{recipe.description}</p>
-      {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.name} />}
+      <p>{recipe.formula}</p>
+      {recipe.image && <img src={recipe.image} alt={recipe.name} />}
     </div>
   );
 }
