@@ -8,10 +8,9 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
+	colors: {
+		dark: "#312480",
+	},      
     },
   },
   plugins: [],
